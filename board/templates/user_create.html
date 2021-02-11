@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block content %}
+
+<div>
+  <form action="/user_create" method="post">
+    <p>유저 생성</p>
+    <div>
+      <label for="username">닉네임: </label>
+      <input required id="username" type="text" name="username" />
+    </div>
+    <div>
+      <label for="email">이메일: </label>
+      <input required id="email" type="email" name="email" />
+    </div>
+    <div>
+      <label for="password">비밀번호: </label>
+      <input required id="password" type="password" name="password" />
+    </div>
+    <div>
+      <label for="password_confirm">비밀번호 확인: </label>
+      <input
+        required
+        id="password_confirm"
+        type="password"
+        name="password_confirm"
+      />
+    </div>
+    <input name="submit" type="submit" value="생성하기" />
+  </form>
+</div>
+
+{% endblock %}

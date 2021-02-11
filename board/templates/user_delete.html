@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+
+<div>
+  {% for user in context %}
+  <form action="/delete_user/{{context.id}}" method="post">
+    <input hidden type="text" name="user_id" value="{{ context.id }}" />
+    <input type="submit" value="삭제하기" />
+  </form>
+  {% endfor %}
+</div>
+
+{% endblock %}

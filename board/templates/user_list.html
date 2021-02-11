@@ -1,0 +1,30 @@
+{% extends 'base.html' %} {% block content %}
+
+<p>user list</p>
+<div>
+  <ul>
+    {% for user in context %}
+    <li id="{{ user.id }}">
+      <span> {{user.name}} </span>
+      <span>{{user.email}}</span>
+      <span>{{user.password}}</span>
+      <span>{{user.created_at}}</span>
+      <a href="/update_user/{{ user.id }}">{{ user.name }} 이름 변경 </a>
+      <span>
+        <form
+          style="display: inline"
+          action="/delete_user/{{ user.id }}"
+          method="post"
+        >
+          <input hidden type="text" value="{{ user.id }}" />
+          <input type="submit" value="삭제하기" />
+        </form>
+      </span>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<div>
+  <a href="/user_create">유저 등록</a>
+</div>
+{% endblock %}
