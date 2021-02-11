@@ -40,11 +40,10 @@ def user_create():
         password_confirm = request.form.get("password_confirm", "")
         if password != password_confirm or password == "":
             return redirect(url_for(".users"))
+
         name = request.form.get("username", "").strip()
         email = request.form.get("email", "").strip()
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        if name == "" or email == "":
-            return redirect(url_for(".users"))
         create_user(name, email, password, now)
         return redirect(url_for(".users"))
     return render_template("user_create.html")
