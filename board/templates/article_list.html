@@ -1,17 +1,1 @@
-{% extends 'base.html' %} {% block content %} {% for article in context %}
-
-<div>
-  <ul>
-    <a href="#">
-      <li>
-        {{ article.created_at }} | {{ article.title }} | {{ article.name }}
-      </li>
-    </a>
-  </ul>
-</div>
-
-{% endfor %}
-<div>
-  <a href="/article_create"> 글쓰기 </a>
-</div>
-{% endblock %}
+{% extends 'base.html' %} {% block content %} {% endblock %}

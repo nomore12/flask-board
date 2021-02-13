@@ -11,6 +11,7 @@ from flask import (
 )
 
 from db_manager import (
+    login_user,
     create_user,
     get_users,
     get_user,
@@ -27,9 +28,46 @@ from logger import logger
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/", methods=["POST", "GET"])
 def index():
-    return render_template("base.html")
+    logger.debug("post")
+    articles = get_articles()
+    if request.method != "POST":
+        return render_template(
+            "base.html",
+            context={"user": None, "articles": articles},
+        )
+    email = request.form.get("email")
+    password = request.form.get("password")
+    user = login_user(email, password)
+
+    if user is False:
+        return render_template(
+            "base.html", context={"user": user, "articles": articles}
+        )
+    logger.debug("auth")
+    if email != user["email"] or password != user["password"]:
+        return render_template(
+            "base.html",
+            context={"user": None, "articles": articles},
+        )
+    session["user"] = user
+    return render_template(
+        "base.html",
+        context={
+            "user": user,
+            "articles": articles,
+        },
+    )
+
+
+@app.route("/logout")
+def logout():
+    user = session.get("user", None)
+    if user is None:
+        return redirect(url_for(".index"))
+    session.pop("user")
+    return redirect(url_for(".index"))
 
 
 @app.route("/users")
@@ -45,7 +83,6 @@ def user_create():
         password_confirm = request.form.get("password_confirm", "")
         if password != password_confirm or password == "":
             return redirect(url_for(".users"))
-
         name = request.form.get("username", "").strip()
         email = request.form.get("email", "").strip()
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -88,5 +125,5 @@ def article_create():
 
 
 if __name__ == "__main__":
-    app.debug = True
+    app.config.update(DEBUG=True, SECRET_KEY="secretkey")
     app.run()

@@ -13,7 +13,20 @@
   <body>
     <div>
       {% block header %}
-      <div>this is header</div>
+      <span>
+        {% if context.user == None %}
+        <form action="/" method="post">
+          <label for="email">email: </label>
+          <input id="email" name="email" type="email" />
+          <label for="password">password: </label>
+          <input id="password" name="password" type="text" />
+          <input type="submit" value="로그인" />
+        </form>
+        {% else %}
+        <a href="#">{{ context.user.name }}</a><a href="logout">로그아웃</a>
+        <span>{{ context.name }}</span>
+        {% endif %}
+      </span>
       {% endblock %}
       <div class="container">
         {% block navbar %}
@@ -22,17 +35,24 @@
           <span class="nav-item">items</span>
           <span class="nav-item">items</span>
         </div>
-        {% endblock %} {% block content %}
+        {% endblock %} {% block content %} {% for article in context.articles %}
 
-        <form action="login" method="post">
-          <label for="email">login email: </label>
-          <input required id="email" type="email" />
-          <label for="password">password: </label>
-          <input required id="password" name="password" type="password" />
-          <input type="submit" value="Login" />
-        </form>
+        <div>
+          <ul>
+            <a href="#">
+              <li>
+                {{ article.created_at }} | {{ article.title }} | {{ article.name
+                }}
+              </li>
+            </a>
+          </ul>
+        </div>
 
-        {% endblock %}
+        {% endfor %} {% if context.user != None %}
+        <div>
+          <a href="/article_create"> 글쓰기 </a>
+        </div>
+        {% endif %} {% endblock %}
       </div>
 
       {% block footer %}

@@ -16,7 +16,7 @@ def set_connection():
 
 # 쿼리를 실행하는 함수
 def execute_query(sql):
-    print(sql)
+    logger.debug(sql)
     conn = set_connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute(sql)
@@ -25,7 +25,7 @@ def execute_query(sql):
 
 
 def execute_get_query(sql, manny=False):
-    print(sql)
+    logger.debug(sql)
     conn = set_connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     if manny:
@@ -64,6 +64,17 @@ def get_users():
     return result
 
 
+def login_user(email, password):
+    sql = f"SELECT * \
+            FROM user \
+            WHERE email = '{email}' \
+            AND password = '{password}'; "
+    result = execute_get_query(sql)
+    if result is not None:
+        return result
+    return False
+
+
 # 유저 정보 수정 U
 def update_user(id, update_name):
     sql = f"UPDATE user SET name = '{update_name}' WHERE id = {id};"
@@ -96,7 +107,6 @@ def get_articles():
         LEFT JOIN user AS u \
         ON a.user_id = u.id;"
     result = execute_get_query(sql, manny=True)
-    logger.debug(result)
     return result
 
 
@@ -116,3 +126,4 @@ def delete_article():
 
 
 # now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# login_user("nomore6@naver.com", 234)
