@@ -22,7 +22,17 @@
           <span class="nav-item">items</span>
           <span class="nav-item">items</span>
         </div>
-        {% endblock %} {% block content %} this is content block{% endblock %}
+        {% endblock %} {% block content %}
+
+        <form action="login" method="post">
+          <label for="email">login email: </label>
+          <input required id="email" type="email" />
+          <label for="password">password: </label>
+          <input required id="password" name="password" type="password" />
+          <input type="submit" value="Login" />
+        </form>
+
+        {% endblock %}
       </div>
 
       {% block footer %}

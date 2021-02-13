@@ -4,7 +4,13 @@
   <form action="/update_user/{{context.id}}" method="post">
     <input type="hidden" name="user_id" value="{{context.id}}" hidden />
     <label for="username">유저 닉네임</label>
-    <input id="username" name="username" type="text" value="{{context.name}}" />
+    <input
+      required
+      id="username"
+      name="username"
+      type="text"
+      value="{{context.name}}"
+    />
     <label for="email">이메일(수정 불가능)</label>
     <input
       readonly

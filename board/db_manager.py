@@ -1,6 +1,6 @@
 import pymysql
 from datetime import datetime
-
+from logger import logger
 
 # mysql과의 connection을 만드는 함수
 def set_connection():
@@ -14,7 +14,7 @@ def set_connection():
     return conn
 
 
-# 쿼리를 실행하는 함수(args에 파라메터를 넣음)
+# 쿼리를 실행하는 함수
 def execute_query(sql):
     print(sql)
     conn = set_connection()
@@ -36,24 +36,6 @@ def execute_get_query(sql, manny=False):
         result = cursor.fetchone()
     conn.commit()
     conn.close()
-    return result
-
-
-# 위와 동일하나 예외처리가 되어있는 함수
-def execute_try_query(sql, *args):
-    conn = set_connection()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-    result = ""
-    try:
-        cursor.execute(sql, args)
-        conn.commit()
-        result = "success"
-    except Exception as e:
-        result = e
-    else:
-        result = "execute query OK"
-    finally:
-        conn.close()
     return result
 
 
@@ -94,11 +76,43 @@ def delete_user(id):
     execute_query(sql)
 
 
+"""
+게시글 CRUD 코드
+CRUD에 해당하는 코드들은 쿼리문만 만들고, 위에 정의한 함수로 쿼리를 실행한다.
+게시글은 유저와 외래키를 통해 관계를 맺고 있다.
+리턴 값이 있는 경우(R)도 있다.
+"""
 # 게시글 생성
-def create_article(title, content, user_id, created_at):
+def create_article(user_id, title, content, created_at):
     sql = f"INSERT INTO article (title, content, user_id, created_at) \
-            VALUES ({title}, {content}, {user_id}, {created_at}); "
+            VALUES ('{title}', '{content}', '{user_id}', '{created_at}'); "
     execute_query(sql)
+
+
+# 모든 게시글 읽기
+def get_articles():
+    sql = f"SELECT a.id, a.title, a.content, a.created_at, a.user_id, u.name, u.email \
+        FROM article AS a \
+        LEFT JOIN user AS u \
+        ON a.user_id = u.id;"
+    result = execute_get_query(sql, manny=True)
+    logger.debug(result)
+    return result
+
+
+# 하나의 게시글 읽기
+def get_article():
+    pass
+
+
+# 게시글 수정
+def update_article():
+    pass
+
+
+# 게시글 지우기
+def delete_article():
+    pass
 
 
 # now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

@@ -16,6 +16,11 @@ from db_manager import (
     get_user,
     update_user,
     delete_user,
+    create_article,
+    get_articles,
+    get_article,
+    update_article,
+    delete_article,
 )
 from logger import logger
 
@@ -67,6 +72,19 @@ def user_delete(id):
         redirect(url_for(".users"))
     delete_user(id)
     return redirect(url_for(".users"))
+
+
+@app.route("/articles")
+def articles():
+    context = get_articles()
+    return render_template("article_list.html", context=context)
+
+
+@app.route("/article_create", methods=["GET", "POST"])
+def article_create():
+    if request.method == "POST":
+        pass
+    return render_template("article_create.html")
 
 
 if __name__ == "__main__":

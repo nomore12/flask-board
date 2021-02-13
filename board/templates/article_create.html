@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+
+<form action="/article_create" method="post">
+  <input type="text" name="user_id" hidden value="{{ content.user_id }}" />
+  <label for="title">title: </label>
+  <input id="title" name="title" type="text" />
+  <label for="content">content: </label>
+  <input id="content" name="content" autocomplete="off" type="textarea" />
+  <input type="submit" value="글쓰기" />
+</form>
+
+{% endblock %}
