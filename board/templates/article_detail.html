@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+
+<span>{{context.article.created_at}}</span> |
+<span>{{ context.article.title }}</span> |
+<span>{{ context.article.name }}</span>
+<div>
+  <p>content is ...</p>
+  <p>{{ context.article.content }}</p>
+</div>
+{% if context.article.user_id == context.user.id %}
+<a href="/article/{{ context.article.id }}/delete">글 삭제</a>
+{% endif %} {% endblock %}

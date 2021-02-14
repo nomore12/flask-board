@@ -2,6 +2,7 @@ import pymysql
 from datetime import datetime
 from logger import logger
 
+
 # mysql과의 connection을 만드는 함수
 def set_connection():
     conn = pymysql.connect(
@@ -111,18 +112,32 @@ def get_articles():
 
 
 # 하나의 게시글 읽기
-def get_article():
-    pass
+def get_article(id):
+    sql = f"SELECT a.id, a.title, a.content, a.created_at, a.user_id, u.name, u.email \
+            FROM article AS a \
+            LEFT JOIN user AS u \
+            ON a.user_id = u.id \
+            WHERE a.id = {id};"
+
+    result = execute_get_query(sql)
+    return result
 
 
 # 게시글 수정
-def update_article():
+def update_article(user_id):
     pass
+
+
+#     sql = f"SELECT * FROM article WHERE user_id = {id};"
+#     result = execute_get_query()
+#     return result
 
 
 # 게시글 지우기
-def delete_article():
-    pass
+def delete_article(id):
+    sql = f"DELETE FROM article \
+            WHERE id = {id}; "
+    execute_query(sql)
 
 
 # now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

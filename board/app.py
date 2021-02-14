@@ -30,23 +30,27 @@ app = Flask(__name__)
 
 @app.route("/", methods=["POST", "GET"])
 def index():
-    logger.debug("post")
     articles = get_articles()
-    if request.method != "POST":
+    user = session.get("user", False)
+
+    if request.method != "POST" and user is False:
         return render_template(
             "base.html",
             context={"user": None, "articles": articles},
         )
+    elif request.method != "POST":
+        return render_template(
+            "base.html",
+            context={"user": user, "articles": articles},
+        )
     email = request.form.get("email")
     password = request.form.get("password")
     user = login_user(email, password)
-
     if user is False:
         return render_template(
-            "base.html", context={"user": user, "articles": articles}
+            "base.html", context={"user": None, "articles": articles}
         )
-    logger.debug("auth")
-    if email != user["email"] or password != user["password"]:
+    if email != user.get("email", "") or password != user.get("password", ""):
         return render_template(
             "base.html",
             context={"user": None, "articles": articles},
@@ -64,9 +68,15 @@ def index():
 @app.route("/logout")
 def logout():
     user = session.get("user", None)
+    logger.debug(
+        f"---------------index session: {session.get('user', '없음')}-------------------"
+    )
     if user is None:
         return redirect(url_for(".index"))
     session.pop("user")
+    logger.debug(
+        f"---------------index session: {session.get('user', '없음')}-------------------"
+    )
     return redirect(url_for(".index"))
 
 
@@ -87,7 +97,7 @@ def user_create():
         email = request.form.get("email", "").strip()
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         create_user(name, email, password, now)
-        return redirect(url_for(".users"))
+        return redirect(url_for(".index"))
     return render_template("user_create.html")
 
 
@@ -119,9 +129,50 @@ def articles():
 
 @app.route("/article_create", methods=["GET", "POST"])
 def article_create():
-    if request.method == "POST":
-        pass
-    return render_template("article_create.html")
+    user = session.get("user", None)
+    if request.method != "POST":
+        if user is not None:
+            return render_template(
+                "article_create.html",
+                context={
+                    "user": user,
+                },
+            )
+    title = request.form.get("title", None)
+    content = request.form.get("content", None)
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    logger.debug(f"id: {user.get('id', '')}, title: {title}")
+    logger.debug(session)
+    create_article(user.get("id", ""), title, content, now)
+    return redirect(url_for(".index"))
+
+
+@app.route("/article/<id>")
+def article_detail(id):
+    article = get_article(id)
+    user = session.get("user", None)
+    context = {"user": user, "article": article}
+    return render_template("article_detail.html", context=context)
+
+
+@app.route("/article/<id>/delete")
+def article_delete(id):
+    delete_article(id)
+    return redirect(url_for(".index"))
+
+
+@app.route("/article/update", methods=["GET", "POST"])
+def article_update(id):
+    article = get_article(id)
+    user = get_user(article.get("user_id", None))
+    if request.method != "POST" and (article is not None and user is not None):
+        return render_template(
+            "article_update.html", context={"user": user, "article": article}
+        )
+    elif request.method != "POST" and (article == None or user is None):
+        return render_template(
+            "article_update.html", context={"user": user, "article": article}
+        )
 
 
 if __name__ == "__main__":
