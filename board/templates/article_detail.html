@@ -5,7 +5,9 @@
 <span>{{ context.article.name }}</span>
 <div>
   <p>content is ...</p>
-  <p>{{ context.article.content }}</p>
+  <p>
+    {% autoescape false %} {{ context.article.content }} {% endautoescape %}
+  </p>
 </div>
 {% if context.article.user_id == context.user.id %}
 <a href="/article/{{ context.article.id }}/delete">글 삭제</a>

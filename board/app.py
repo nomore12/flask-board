@@ -150,6 +150,7 @@ def article_create():
 @app.route("/article/<id>")
 def article_detail(id):
     article = get_article(id)
+    article["content"] = article["content"].replace("\r\n", "<br />")
     user = session.get("user", None)
     context = {"user": user, "article": article}
     return render_template("article_detail.html", context=context)
