@@ -8,10 +8,13 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/reset.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
     <title>Document</title>
   </head>
   <body>
-    <div>
       {% block header %}
       <span>
         {% if context.user == None %}
@@ -20,10 +23,10 @@
           <input id="email" name="email" type="email" />
           <label for="password">password: </label>
           <input id="password" name="password" type="text" />
-          <input type="submit" value="로그인" />
+          <input class="button" type="submit" value="로그인" />
         </form>
         {% else %}
-        <a href="#">{{ context.user.name }}</a><a href="/logout">로그아웃</a>
+        <a href="#">{{ context.user.name }}</a><a class="button" href="/logout">로그아웃</a>
         <span>{{ context.name }}</span>
         {% endif %}
       </span>
@@ -35,23 +38,26 @@
           <span class="nav-item">items</span>
           <span class="nav-item">items</span>
         </div>
-        {% endblock %} {% block content %}
-        <table>
+
+        {% endblock %}         
+        <div class="content">
+        {% block content %}
+        <table class="table">
           <thead>
-            <tr>
-              <td>날짜</td>
-              <td>제목</td>
-              <td>작성자</td>
+            <tr class="row">
+              <td class="article-td">날짜</td>
+              <td class="article-title article-td">제목</td>
+              <td class="article-td">작성자</td>
             </tr>
           </thead>
           <tbody>
             {% for article in context.articles %}
-            <tr>
-              <td>{{ article.created_at }}</td>
-              <td>
-                <a href="article/{{ article.id }}">{{ article.title }}</a>
-              </td>
-              <td>{{ article.name }}</td>
+            <tr class="row">
+              <td class="article-td">{{ article.created_at }}</td>
+              <td class="article-td article-table-body">
+                <a class="article-title" href="article/{{ article.id }}">{{ article.title }}</a>
+              </td class="article-td">
+              <td class="article-td">{{ article.name }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -59,14 +65,14 @@
 
         {% if context.user != None %}
         <div>
-          <a href="/article_create"> 글쓰기 </a>
+          <a class="button" href="/article_create"> 글쓰기 </a>
         </div>
         {% endif %} {% endblock %}
+        </div>
       </div>
 
       {% block footer %}
       <footer>this is footer</footer>
       {% endblock %}
-    </div>
   </body>
 </html>

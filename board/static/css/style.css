@@ -1,0 +1,48 @@
+.container {
+  width: 1200px;
+  margin: auto;
+  background-color: lightgray;
+}
+
+.table {
+  min-width: 400px;
+  margin: auto;
+}
+
+.row {
+  padding: 4px;
+  /* border-bottom: 1px solid black; */
+}
+
+.article-td {
+  padding: 3px 5px;
+  border: 1px solid black;
+}
+
+.article-title {
+  width: 800px;
+  padding-left: 12px;
+}
+
+a:link,
+a:visited,
+a:active,
+a:hover {
+  text-decoration: none;
+  color: black;
+}
+
+.article-title:hover {
+  text-decoration: underline;
+}
+
+.article-table-body {
+  padding-left: 12px;
+}
+
+.button {
+  border: 1px solid blue;
+  background-color: white;
+  border-radius: 5px;
+  padding: 4px 6px;
+}
