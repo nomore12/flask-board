@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% block content %}
+
+<script src="{{ url_for('static', filename='js/textarea.js') }}"></script>
+
+<form id="not_allow_submit" action="/article/{{context.article.id}}/update" method="post">
+  <input type="text" name="user_id" hidden value="{{ context.user.id }}" />
+  <div>
+    <label for="title">title: </label>
+    <input required id="title" name="title" type="text" value="{{ context.article.title }}" />
+  </div>
+
+  <textarea
+    required
+    id="content"
+    name="content"
+    type="textarea"
+    cols="30"
+    rows="20"
+  >{{ context.article.content }}</textarea>
+
+  <input type="submit" value="수정하기" /></div>
+</form>
+
+{% endblock %}

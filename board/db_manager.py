@@ -124,8 +124,10 @@ def get_article(id):
 
 
 # 게시글 수정
-def update_article(user_id):
-    pass
+def update_article(id, user_id, title, content):
+    sql = f"UPDATE article SET title = '{title}', content = '{content}' \
+            WHERE id = {id} AND user_id = {user_id};"
+    execute_query(sql)
 
 
 #     sql = f"SELECT * FROM article WHERE user_id = {id};"

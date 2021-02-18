@@ -36,6 +36,10 @@ a:hover {
   text-decoration: underline;
 }
 
+.article-content {
+  padding: 8px 12px;
+}
+
 .article-table-body {
   padding-left: 12px;
 }

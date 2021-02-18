@@ -1,14 +1,25 @@
 {% extends 'base.html' %} {% block content %}
-
-<span>{{context.article.created_at}}</span> |
-<span>{{ context.article.title }}</span> |
-<span>{{ context.article.name }}</span>
 <div>
-  <p>content is ...</p>
-  <p>
+  <span>{{context.article.created_at}}</span> |
+  <span>{{ context.article.title }}</span> |
+  <span>{{ context.article.name }}</span>
+</div>
+
+<div>
+  <p class="article-content">
     {% autoescape false %} {{ context.article.content }} {% endautoescape %}
   </p>
 </div>
-{% if context.article.user_id == context.user.id %}
-<a href="/article/{{ context.article.id }}/delete">글 삭제</a>
+
+{% if context.user.id == context.article.user_id %}
+
+<div class="article-content">
+  <a class="button" href="/article/{{ context.article.id }}/delete">글 삭제</a>
+  <a
+    class="article-update button"
+    href="/article/{{ context.article.id }}/update"
+    >글 수정하기</a
+  >
+</div>
+
 {% endif %} {% endblock %}

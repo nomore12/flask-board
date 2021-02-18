@@ -16,6 +16,9 @@
   </head>
   <body>
       {% block header %}
+      <div>
+        <a href="/">HOME</a>
+      </div>
       <span>
         {% if context.user == None %}
         <form action="/" method="post">
@@ -25,7 +28,8 @@
           <input id="password" name="password" type="text" />
           <input class="button" type="submit" value="로그인" />
         </form>
-        {% else %}
+        <a class="button" href="/user_create">회원가입</a>
+        {% elif context.user != None %}
         <a href="#">{{ context.user.name }}</a><a class="button" href="/logout">로그아웃</a>
         <span>{{ context.name }}</span>
         {% endif %}

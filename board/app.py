@@ -88,7 +88,11 @@ def users():
 
 @app.route("/user_create", methods=["POST", "GET"])
 def user_create():
-    if request.method == "POST":
+    user = session.get("user", None)
+    context = {"user": user}
+    if request.method == "GET":
+        return render_template("user_create.html", context=context)
+    elif request.method == "POST":
         password = request.form.get("password", "")
         password_confirm = request.form.get("password_confirm", "")
         if password != password_confirm or password == "":
@@ -98,7 +102,6 @@ def user_create():
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         create_user(name, email, password, now)
         return redirect(url_for(".index"))
-    return render_template("user_create.html")
 
 
 @app.route("/update_user/<id>", methods=["POST", "GET"])
@@ -130,7 +133,7 @@ def articles():
 @app.route("/article_create", methods=["GET", "POST"])
 def article_create():
     user = session.get("user", None)
-    if request.method != "POST":
+    if request.method == "GET":
         if user is not None:
             return render_template(
                 "article_create.html",
@@ -138,13 +141,14 @@ def article_create():
                     "user": user,
                 },
             )
-    title = request.form.get("title", None)
-    content = request.form.get("content", None)
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    logger.debug(f"id: {user.get('id', '')}, title: {title}")
-    logger.debug(session)
-    create_article(user.get("id", ""), title, content, now)
-    return redirect(url_for(".index"))
+        elif user is None:
+            return redirect(url_for(".index"))
+    elif request.method == "POST":
+        title = request.form.get("title", None)
+        content = request.form.get("content", None)
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        create_article(user.get("id", ""), title, content, now)
+        return redirect(url_for(".index"))
 
 
 @app.route("/article/<id>")
@@ -158,22 +162,37 @@ def article_detail(id):
 
 @app.route("/article/<id>/delete")
 def article_delete(id):
-    delete_article(id)
-    return redirect(url_for(".index"))
+    user = session.get("user", None)
+    if user is not None:
+        delete_article(id)
+        return redirect(url_for(".index"))
+    else:
+        return redirect(url_for(".article_detail", id=id))
 
 
-@app.route("/article/update", methods=["GET", "POST"])
+@app.route("/article/<id>/update", methods=["POST", "GET"])
 def article_update(id):
+    user = session.get("user", None)
+    logger.debug("update start")
+    if user is None:
+        logger.debug("no user")
+        return redirect(url_for(".article_update", id=id))
     article = get_article(id)
-    user = get_user(article.get("user_id", None))
-    if request.method != "POST" and (article is not None and user is not None):
-        return render_template(
-            "article_update.html", context={"user": user, "article": article}
-        )
-    elif request.method != "POST" and (article == None or user is None):
-        return render_template(
-            "article_update.html", context={"user": user, "article": article}
-        )
+    context = {"user": user, "article": article}
+    logger.debug("method choice")
+    if request.method == "GET":
+        logger.debug("method get")
+        return render_template("article_update.html", context=context)
+    elif request.method == "POST":
+        logger.debug("update post")
+        user_id = request.form.get("user_id", None)
+        if user["id"] != user_id:
+            redirect(url_for("article_detail", id=id))
+        title = request.form.get("title", None)
+        content = request.form.get("content", None)
+        if user_id is not None and title is not None and content is not None:
+            update_article(id=id, user_id=user_id, title=title, content=content)
+            return redirect(url_for("article_detail", id=id))
 
 
 if __name__ == "__main__":
